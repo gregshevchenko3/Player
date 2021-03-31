@@ -18,7 +18,7 @@ namespace Player
     {
         private string _arg = "";
         private int _fx = 0, _fy = 0;
-        private int _dx, _dy;
+        private int _dx, _dy, playlist_position = 0;
         private InterfaceSettings _settings;
         public AxWMPLib.AxWindowsMediaPlayer Player { get => player;  }
         public int PlayerHeight { get => Height - menuStrip1.Height; }
@@ -56,7 +56,17 @@ namespace Player
             alwaysOnTopToolStripMenuItem.Checked = _settings.AlwaysOnTop;
             dropdownListToolStripMenuItem.Checked = (_settings.PlaylistViewMode == PlaylistViewMode.DropDownList);
             leftPanelToolStripMenuItem.Checked = (_settings.PlaylistViewMode == PlaylistViewMode.DetailForm);
-                
+
+            playlist_position = playlistToolStripMenuItem.DropDown.Items.Count;
+            change_playlistmenu_items();
+        }
+        private void ChangePlaylist(object sender, EventArgs e)
+        {
+            WMPLib.IWMPPlaylistArray array = player.playlistCollection.getByName(((ToolStripMenuItem)sender).Text);
+            if(array.count > 0) { 
+                player.currentPlaylist = array.Item(0);
+                playlistPanel1.LoadFromPlayList();
+            }
         }
         private void PlayerWindow_DragEnter(object sender, DragEventArgs e)
         {
@@ -111,7 +121,8 @@ namespace Player
                 {
                     if (player.currentPlaylist.Item[i].isIdentical[player.currentMedia])
                     {
-                        playlistPanel1.PlayIndex = i;
+                        if(playlistPanel1.Count > 0 )
+                            playlistPanel1.PlayIndex = i;
                         break;
                     }
                 }
@@ -187,6 +198,53 @@ namespace Player
                 player.Width = Width;
                 AllowDrop = true;
                 playlistPanel1.AllowDropLV = false;
+            }
+        }
+        private void DeletePlaylist_Click(object sender, EventArgs e)
+        {
+            ListPlaylists listPlaylists = new ListPlaylists();
+            listPlaylists.Text = "Delete playlist";
+            listPlaylists.OkBtn.Text = "Delete";
+            listPlaylists.Col = player.playlistCollection;
+            if (listPlaylists.ShowDialog() == DialogResult.OK)
+            {
+                player.playlistCollection.remove(listPlaylists.wMPPlaylist);
+                for (int i = playlist_position; i < playlistToolStripMenuItem.DropDown.Items.Count; i++)
+                {
+                    if (playlistToolStripMenuItem.DropDown.Items[i].Text == listPlaylists.wMPPlaylist.name)
+                    {
+                        playlistToolStripMenuItem.DropDown.Items.Remove(playlistToolStripMenuItem.DropDown.Items[i]);
+                    }
+                }
+            }
+        }
+        public void change_playlistmenu_items()
+        {
+            if(playlistToolStripMenuItem.DropDown.Items.Count - playlist_position < 10)
+            {
+                WMPLib.IWMPPlaylistArray array = player.playlistCollection.getAll();
+                for (int i = 0; i < array.count && i < 10; i++)
+                {
+                    playlistToolStripMenuItem.DropDown.Items.Add(array.Item(i).name).Click += ChangePlaylist;
+                }
+            }
+        }
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            player.currentPlaylist.clear();
+            playlistPanel1.Clear();
+        }
+
+        private void OpenPlaylist_Click(object sender, EventArgs e)
+        {
+            ListPlaylists listPlaylists = new ListPlaylists();
+            listPlaylists.Text = "Open playlist";
+            listPlaylists.OkBtn.Text = "Open";
+            listPlaylists.Col = player.playlistCollection;
+            if (listPlaylists.ShowDialog() == DialogResult.OK) {
+                MessageBox.Show(listPlaylists.wMPPlaylist.name);
+                player.currentPlaylist = listPlaylists.wMPPlaylist;
+                playlistPanel1.LoadFromPlayList();
             }
         }
         private void player_KeyUpEvent(object sender, AxWMPLib._WMPOCXEvents_KeyUpEvent e)

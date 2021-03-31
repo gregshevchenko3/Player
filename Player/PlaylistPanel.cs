@@ -26,15 +26,21 @@ namespace Player
                 { 
                     if (_mode == PlaylistViewMode.DetailForm)
                     {
-                        playListView.Items[_playIndex].BackColor = Color.White;
-                        playListView.Items[_playIndex].ForeColor = Color.Black;
+                        if (playListView.Items.Count > 0)
+                        {
+                            playListView.Items[_playIndex].BackColor = Color.White;
+                            playListView.Items[_playIndex].ForeColor = Color.Black;
+                        }
                     } 
                 }
                 _playIndex = value;
                 if (_mode == PlaylistViewMode.DetailForm)
                 {
-                    playListView.Items[_playIndex].BackColor = Color.LightGreen;
-                    playListView.Items[_playIndex].ForeColor = Color.Green;
+                    if (playListView.Items.Count > 0 && _playIndex >= 0)
+                    {
+                        playListView.Items[_playIndex].BackColor = Color.LightGreen;
+                        playListView.Items[_playIndex].ForeColor = Color.Green;
+                    }
                 }
                 else
                 {
@@ -76,6 +82,7 @@ namespace Player
             get => _mode;
         }
         private ComboBox DropDownPlaylistView;
+        public int Count { get => playListView.Items.Count;  }
 
         public PlaylistPanel()
         {
@@ -103,6 +110,26 @@ namespace Player
             removeButton.ToolTipText = "Remove selected track";
             savePlaylistAs.Enabled = false;
             savePlaylistAs.ToolTipText = "Save the playlist as ...";
+        }
+
+        internal void LoadFromPlayList()
+        {
+            for (int i = 0; i < player.currentPlaylist.count; i++)
+            {
+                _mediaAdapters.Add(new MediaAdapter(player.currentPlaylist.Item[i]));
+                playListView.Visible = false;
+                playListView.Visible = true;
+            }
+        }
+        public void Clear()
+        {
+            PlayIndex = -1;
+            _mediaAdapters.Clear();
+            if (playListView.Visible)
+            {
+                playListView.Visible = false;
+                playListView.Visible = true;
+            }
         }
         public void ChangeMode(PlaylistViewMode mode)
         {
@@ -133,7 +160,6 @@ namespace Player
             _mode = mode;
             
         }
-
         private bool PlaylistContainsMedia(WMPLib.IWMPPlaylist playlist, WMPLib.IWMPMedia media)
         {
             for (int i = 0; i < playlist.count; i++)
@@ -218,11 +244,15 @@ namespace Player
         }
         private void listView1_ItemActivate(object sender, EventArgs e)
         {
-            if(_mode == PlaylistViewMode.DetailForm)
-               PlayIndex = playListView.SelectedItems[0].Index;
-            else 
-               PlayIndex = DropDownPlaylistView.SelectedIndex;
-            player.Ctlcontrols.playItem(player.currentPlaylist.Item[_playIndex]);
+            if (_mode == PlaylistViewMode.DetailForm)
+                PlayIndex = playListView.SelectedItems[0].Index;
+            else
+            {
+                if(_mediaAdapters.Count > 0)
+                    PlayIndex = DropDownPlaylistView.SelectedIndex;
+            }
+            if (PlayIndex > 0)
+                player.Ctlcontrols.playItem(player.currentPlaylist.Item[_playIndex]);
         }
         private void playListView_DragOver(object sender, DragEventArgs e)
         {
@@ -250,7 +280,8 @@ namespace Player
             {
                 string[] data = (string[])e.Data.GetData(DataFormats.FileDrop);
                 Visible = false;
-                AppendInPlaylist(data, playListView.CheckedItems[0].Index);
+                if(playListView.Items.Count > 0)
+                    AppendInPlaylist(data, playListView.CheckedItems[0].Index);
                 Visible = true;
             }
             else if(e.Data.GetDataPresent(typeof(ListViewItem)))
@@ -272,7 +303,6 @@ namespace Player
                 
                 playListView.Visible = false;
                 playListView.Visible = true;
-                MessageBox.Show($"playing index: {_playIndex} ;");
             }
         }
         private void playListView_DragEnter(object sender, DragEventArgs e)
@@ -292,11 +322,37 @@ namespace Player
         }
         private void addButton_Click(object sender, EventArgs e)
         {
-
+            var dlg = new OpenFileDialog();
+            dlg.InitialDirectory = "C:\\";
+            dlg.Filter = "video files (*.avi)|*.avi";
+            dlg.FilterIndex = 1;
+            if(dlg.ShowDialog() == DialogResult.OK)
+            {
+                var filePath = dlg.FileName;
+                AppendInPlaylist(new string[] { filePath });
+                playListView.Visible = false;
+                playListView.Visible = true;
+            }
         }
         private void playListView_ItemDrag(object sender, ItemDragEventArgs e)
         {
             DoDragDrop(e.Item, DragDropEffects.Move);
+        }
+        private void removeButton_Click(object sender, EventArgs e)
+        {
+            var indexes = playListView.SelectedIndices;
+            for (int i = 0; i < indexes.Count; i++)
+            {
+                player.currentPlaylist.removeItem(player.currentPlaylist.Item[indexes[i]]);
+                _mediaAdapters.Remove(_mediaAdapters[indexes[i]]);
+                playListView.Visible = false;
+                playListView.Visible = true;
+            }
+        }
+        private void savePlaylistAs_Click(object sender, EventArgs e)
+        {
+            new playlistSaveAs(player).ShowDialog();
+            ((PlayerWindow)Parent).change_playlistmenu_items();
         }
     }
 }

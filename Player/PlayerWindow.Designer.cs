@@ -36,9 +36,9 @@ namespace Player
             this.player = new AxWMPLib.AxWindowsMediaPlayer();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.playlistToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openPlaylistToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.OpenPlaylist = new System.Windows.Forms.ToolStripMenuItem();
+            this.DeletePlaylist = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.minimalInterfaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -83,36 +83,39 @@ namespace Player
             // playlistToolStripMenuItem
             // 
             this.playlistToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addToolStripMenuItem,
-            this.openPlaylistToolStripMenuItem,
-            this.deleteToolStripMenuItem,
+            this.toolStripMenuItem1,
+            this.OpenPlaylist,
+            this.DeletePlaylist,
             this.toolStripSeparator1});
             this.playlistToolStripMenuItem.Name = "playlistToolStripMenuItem";
             this.playlistToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.playlistToolStripMenuItem.Text = "&Playlist";
             // 
-            // addToolStripMenuItem
+            // toolStripMenuItem1
             // 
-            this.addToolStripMenuItem.Name = "addToolStripMenuItem";
-            this.addToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
-            this.addToolStripMenuItem.Text = "Create Playlist";
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(182, 22);
+            this.toolStripMenuItem1.Text = "Clear current playlist";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
-            // openPlaylistToolStripMenuItem
+            // OpenPlaylist
             // 
-            this.openPlaylistToolStripMenuItem.Name = "openPlaylistToolStripMenuItem";
-            this.openPlaylistToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
-            this.openPlaylistToolStripMenuItem.Text = "Open Playlist";
+            this.OpenPlaylist.Name = "OpenPlaylist";
+            this.OpenPlaylist.Size = new System.Drawing.Size(182, 22);
+            this.OpenPlaylist.Text = "Open Playlist";
+            this.OpenPlaylist.Click += new System.EventHandler(this.OpenPlaylist_Click);
             // 
-            // deleteToolStripMenuItem
+            // DeletePlaylist
             // 
-            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
-            this.deleteToolStripMenuItem.Text = "Delete Playlist";
+            this.DeletePlaylist.Name = "DeletePlaylist";
+            this.DeletePlaylist.Size = new System.Drawing.Size(182, 22);
+            this.DeletePlaylist.Text = "Delete Playlist";
+            this.DeletePlaylist.Click += new System.EventHandler(this.DeletePlaylist_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(145, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(179, 6);
             // 
             // viewToolStripMenuItem
             // 
@@ -194,7 +197,7 @@ namespace Player
             this.playlistPanel1.PlayIndex = -1;
             this.playlistPanel1.Size = new System.Drawing.Size(360, 21);
             this.playlistPanel1.TabIndex = 2;
-            this.playlistPanel1.ViewMode = PlaylistViewMode.DropDownList;
+
             // 
             // PlayerWindow
             // 
@@ -207,7 +210,7 @@ namespace Player
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "PlayerWindow";
-            this.Text = "Form1";
+            this.Text = "C# Player";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PlayerWindow_FormClosing);
             this.Load += new System.EventHandler(this.PlayerWindow_Load);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.PlayerWindow_DragEnter);
@@ -227,9 +230,7 @@ namespace Player
         private AxWMPLib.AxWindowsMediaPlayer player;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem playlistToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openPlaylistToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem OpenPlaylist;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.Timer HideDropDownPlayListTimer;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
@@ -241,6 +242,8 @@ namespace Player
         private System.Windows.Forms.ToolStripMenuItem dropdownListToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem leftPanelToolStripMenuItem;
         private PlaylistPanel playlistPanel1;
+        private System.Windows.Forms.ToolStripMenuItem DeletePlaylist;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
     }
 }
 

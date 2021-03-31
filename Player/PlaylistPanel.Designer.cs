@@ -29,7 +29,6 @@ namespace Player
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlaylistPanel));
             this.playListView = new System.Windows.Forms.ListView();
             this.NameCol = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Duration = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -88,7 +87,7 @@ namespace Player
             // addButton
             // 
             this.addButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.addButton.Image = ((System.Drawing.Image)(resources.GetObject("addButton.Image")));
+            this.addButton.Image = global::Player.icons.plus_icon_32;
             this.addButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.addButton.Name = "addButton";
             this.addButton.Size = new System.Drawing.Size(23, 22);
@@ -98,20 +97,23 @@ namespace Player
             // removeButton
             // 
             this.removeButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.removeButton.Image = ((System.Drawing.Image)(resources.GetObject("removeButton.Image")));
+            this.removeButton.Image = global::Player.icons.minus_icon_32;
             this.removeButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.removeButton.Name = "removeButton";
             this.removeButton.Size = new System.Drawing.Size(23, 22);
             this.removeButton.Text = "toolStripButton2";
+            this.removeButton.Click += new System.EventHandler(this.removeButton_Click);
             // 
             // savePlaylistAs
             // 
             this.savePlaylistAs.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.savePlaylistAs.Image = ((System.Drawing.Image)(resources.GetObject("savePlaylistAs.Image")));
+            this.savePlaylistAs.Image = global::Player.icons.save_icon_32;
             this.savePlaylistAs.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.savePlaylistAs.Name = "savePlaylistAs";
             this.savePlaylistAs.Size = new System.Drawing.Size(23, 22);
             this.savePlaylistAs.Text = "toolStripButton3";
+            this.savePlaylistAs.ToolTipText = "Save playlist as ...";
+            this.savePlaylistAs.Click += new System.EventHandler(this.savePlaylistAs_Click);
             // 
             // PlaylistPanel
             // 
